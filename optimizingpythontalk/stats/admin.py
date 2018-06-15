@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Repository, CommitCounts
 
-# Register your models here.
+admin.register(Repository)
+admin.register(CommitCounts)
