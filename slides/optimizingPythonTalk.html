@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Optimizing Python code
+
+Janis Lesinskis
+
+
+---
+
+# An example of correct but SLOW code
+
+```python
+
+import re; import json; import xml; import numpy; import tensorflow;
+
+def calculate_average(player_id):
+
+
+
+```
+
+
+
+---
+
+# Performance of computers
+
+FLOPS
+
+
+
+
+---
+
+# First some nostalgia
+
+The first computer I used I remember getting an error when trying to run a program "Floating point co processor not installed". I didn't know what a float was back then! But I do remember having to install this:
+
+![SoftwareFPU](softwareFPU.jpeg "from https://www.macintoshrepository.org/2639-softwarefpu-3-0")
+
+---
+
+# Why do we optimize code
+
+In a business sense we do it to make money.
+
+When computers were less powerful you needed to write fairly highly optimized code to have any chance of it running fast enough to satisfy user requirements.
+
+As time goes on the computing power we have available to us has increased substantially. According to Moores Law* computing power has been increasing exponentially as time goes on.
+
+One approach I've seen was just writing slow code and letting computing power catch up.
+
+*(it's not really a law, more just an observation and possibly a self-fulfilling one in recent years)
+
+---
+
+# Why bother writing faster code then?
+
+Bloat and other issues have meant that despite computers being vastly more powerful some tasks are actually *SLOWER* than they used to be!
+
+Writing faster code is not a simple tradeoff of development costs vs speed.
+
+Writing faster code can be easier than slower code, the example code for this talk took me a LOT longer to write than doing it properly.
+
+We have pareto optimal situations and ones that are not.
+
+
+---
+
+#Back to the example code
+
+
+
+---
+
+# Different implementations
+
+There's some options that will let you get some more speed without needing to change your code*.
+
+If you are using CPython you may be able to switch to a more performant implementation like PyPy.
+
+CPython is slow!
+
+*Provided that the libraries are supported by the other implementation.
+
+---
+
+
+
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
