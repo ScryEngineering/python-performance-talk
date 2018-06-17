@@ -13,6 +13,15 @@ class StatsTestCase(TestCase):
         CommitCounts.objects.create(author_name="alice", repo=b, commit_count=20)
         CommitCounts.objects.create(author_name="eve", repo=b, commit_count=10)
 
+    def test_recursive_averages(self):
+        """Test the recursive average function"""
+        from statistics import mean
+        from .calculate_stats_slow import recursive_average
+        a = [1,2,3,4,5]
+        b = [0.1, 3, 2.0, 0.45]
+        assert recursive_average(a) == mean(a)
+        assert recursive_average(b) == mean(b)
+
     def test_pure_averages(self):
         """test that a threshold of zero gives the average"""
         from .calculate_stats_slow import averages_with_threshold
