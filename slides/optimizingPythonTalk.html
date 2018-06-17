@@ -44,13 +44,29 @@ Meaning that we need to filter out the repositories where they have not made man
 # An example of correct but SLOW code
 
 ```python
+import re; import json; import xml; import numpy; import tensorflow;
+from .models import Repository, CommitCounts
 
-import re; import array; import json; import xml; import numpy; import tensorflow;
+def recursive_average(items, cumulative_sum=0, count=0):
+    if not items:
+        return cumulative_sum / count
+    return recursive_average(items[1:], cumulative_sum+items[0], count+1)
 
-insert example averages with threshold calculation code.
-
+authors_plus_commit_info = []; authors = {}
+def averages_with_threshold(threshold: int) -> dict:
+    authors_plus_commit_info.clear(); authors.clear()
+    for commit_info in CommitCounts.objects.all():
+        if commit_info.commit_count > threshold:
+            authors_plus_commit_info.append((commit_info.author_name, commit_info.commit_count))
+    for item in authors_plus_commit_info:
+        try:
+            authors[item[0]]
+        except KeyError:
+            authors[item[0]] = [item[1]]
+        else:
+            authors[item[0]].append(item[1])
+    return {author: recursive_average(items) for author, items in authors.items()}
 ```
-
 (Have a think about this, in the interim I'll talk about a few things.)
 
 ---
@@ -74,6 +90,17 @@ FLOPS*
 
 
 * Not the best metric of performance, but does show the order of magnitude changes that have occured in computing power.
+
+---
+
+# Why maximum FLOPS isn't the best metric
+
+To get the maximum processing power is actually quite tough because the system goes only as fast as the bottlenecks.
+
+CPython traditionally doesn't do well on CPU bound tasks
+
+* GIL
+* Poor locality of reference
 
 ---
 
@@ -160,6 +187,9 @@ How do we improve this?
 ---
 
 # When algorithm choice matters it tends to matter a lot
+
+This is not really Python specific but you will start to run into situations where algorithm choice matters
+faster in Python due to the slower execution speed.
 
 We only needed to sort once here then take slices.
 
