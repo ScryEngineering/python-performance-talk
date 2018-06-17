@@ -91,6 +91,10 @@ FLOPS*
 
 * Not the best metric of performance, but does show the order of magnitude changes that have occured in computing power.
 
+???
+
+http://www.roylongbottom.org.uk/mips.htm
+
 ---
 
 # Why maximum FLOPS isn't the best metric
@@ -106,9 +110,7 @@ CPython traditionally doesn't do well on CPU bound tasks
 
 # Computers are fast these days!
 
-Python is still slow relative to other languages but is fast enough to be viable for many production settings.
-
-Python is fast to develop in!
+Python is still slow relative to other languages but is fast enough to be viable for many production settings. But Python is fast to develop in!
 
 As time goes on the computing power we have available to us has increased substantially. According to Moores Law\* computing power has been increasing exponentially as time goes on. However according to Wirth's Law\* software is getting slower than hardware is getting faster.
 
@@ -126,6 +128,10 @@ In a business sense we do it to make money.
 One approach I've seen was just writing slow code and letting computing power catch up.
 
 An AWS anecdote...
+
+???
+
+Talk about the paradigm shift of microcontroller work at Kanes vs the various one off internal apps that had no performance requirements at all.
 
 ---
 
@@ -154,9 +160,30 @@ We have pareto optimal situations and ones that are not.
 ---
 
 #Back to the example code
+```python
+import re; import json; import xml; import numpy; import tensorflow;
+from .models import Repository, CommitCounts
 
+def recursive_average(items, cumulative_sum=0, count=0):
+    if not items:
+        return cumulative_sum / count
+    return recursive_average(items[1:], cumulative_sum+items[0], count+1)
 
-
+authors_plus_commit_info = []; authors = {}
+def averages_with_threshold(threshold: int) -> dict:
+    authors_plus_commit_info.clear(); authors.clear()
+    for commit_info in CommitCounts.objects.all():
+        if commit_info.commit_count > threshold:
+            authors_plus_commit_info.append((commit_info.author_name, commit_info.commit_count))
+    for item in authors_plus_commit_info:
+        try:
+            authors[item[0]]
+        except KeyError:
+            authors[item[0]] = [item[1]]
+        else:
+            authors[item[0]].append(item[1])
+    return {author: recursive_average(items) for author, items in authors.items()}
+```
 ---
 
 # Different implementations
