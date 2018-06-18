@@ -292,12 +292,43 @@ How can we use this knowledge to our advantage?
 
 ---
 
-# Second example
+# Second part of the example
 
-Percentiles, graphs
+```python
+import re; import json; import xml; import numpy; import tensorflow;
+from .models import Repository, CommitCounts
 
+authors_plus_commit_info = []; authors = {}
+def averages_with_threshold(threshold: int) -> dict:
+    authors_plus_commit_info.clear(); authors.clear()
+    for commit_info in CommitCounts.objects.all():
+        if commit_info.commit_count > threshold:
+            authors_plus_commit_info.append((commit_info.author_name, commit_info.commit_count))
+    for item in authors_plus_commit_info:
+        try:
+            authors[item[0]]
+        except KeyError:
+            authors[item[0]] = [item[1]]
+        else:
+            authors[item[0]].append(item[1])
+    return {author: recursive_average(items) for author, items in authors.items()}
+```
 
-How do we improve this?
+---
+
+# Unused imports
+
+Python caches imports so the first time you import things it will load and subsequently it will load from cache.
+
+Main issues with unused imports
+* Ugly namespace clutter that can cause bugs
+* Unnecessary memory usage
+* Makes the startup time worse
+  * This matters if you have Django spin up on demand (higher time to first byte)
+
+???
+
+Unnecessary importing is a huge problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
 
 ---
 
