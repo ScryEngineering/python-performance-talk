@@ -101,10 +101,11 @@ http://www.roylongbottom.org.uk/mips.htm
 
 To get the maximum processing power is actually quite tough because the system goes only as fast as the bottlenecks.
 
-CPython traditionally doesn't do well on CPU bound tasks
+CPython traditionally doesn't do well on CPU bound tasks because of bottlenecks:
 
 * GIL
 * Poor locality of reference
+* Paying for flexibility even when you don't need it
 
 
 ???
@@ -112,8 +113,7 @@ CPython traditionally doesn't do well on CPU bound tasks
 The peak performance vs sustained performance is a huge factor in why supercomputing designs beat out some commodity hardware:
 https://cug.org/5-publications/proceedings_attendee_lists/2003CD/S03_Proceedings/Pages/Authors/Muzio_slides.pdf
 
-
-Commodity hardware optimized for benchmark results?
+Is commodity hardware optimized for benchmark results?
 
 ---
 
