@@ -13,6 +13,15 @@
         font-family: 'Yanone Kaffeesatz';
         font-weight: normal;
       }
+
+table {
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    border: 1px solid red;
+}
+
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
     </style>
   </head>
@@ -69,6 +78,10 @@ def averages_with_threshold(threshold: int) -> dict:
 ```
 (Have a think about this, in the interim I'll talk about a few things.)
 
+???
+
+It was funny simultaneously doing TDD and other good practices while writing the slowest possible code I could that didn't involve esoteria.
+
 ---
 
 # First some nostalgia
@@ -77,42 +90,58 @@ The first computer I used I remember getting an error when trying to run a progr
 
 ![SoftwareFPU](softwareFPU.jpeg "from https://www.macintoshrepository.org/2639-softwarefpu-3-0")
 
+
+???
+
+
+https://hackaday.com/2016/08/22/ask-hackaday-calling-all-68k-experts/ the motorola 68040 was the first chip in the apple series that had an inbuilt FPU. It appears that if you sent a floating point instruction to the CPU in this architecture and it couldn't handle it an ISR was fired that the operating system had to handle the floating point operations.
+
 ---
 
 
 # Performance of computers
 
-FLOPS*
+|processor              | MIPS   | FLOPS    |  year      |
+|-----------------------|--------|----------|------------|
+|AP-101B (Space shuttle)|  0.4   |  ??      | 1981-1991  |
+|Motorola  68040        |  18    |  ??      | 1990       |
+|Cray 1                 |  160   |  160M    | 1976       |
+|Intel Core i7-6700K    | 207230 | 113.53G  | 2015       |
 
 
-
-
-
-
-* Not the best metric of performance, but does show the order of magnitude changes that have occured in computing power.
+Not the best metric of performance, but does show the order of magnitude changes that have occured in computing power.
 
 ???
 
-Comparison of various performance
+Comparison of performance of various processors
+https://history.nasa.gov/computers/Ch4-3.html
 http://www.roylongbottom.org.uk/mips.htm
+http://www.alternatewars.com/BBOW/Computing/Computing_Power.htm
+https://techgage.com/article/intels-skylake-core-i7-6700k-a-performance-look/
 
 ---
 
-# Why peak FLOPS isn't the best metric
+# Why peak instructions per second isn't the best metric
 
+Processors spend most of their time not at peak load as they can only go as fast as data is supplied to them, sustained perfomance tends to matter far more.
 To get the maximum processing power is actually quite tough because the system goes only as fast as the bottlenecks.
 
 CPython traditionally doesn't do well on CPU bound tasks because of bottlenecks:
 
-* GIL
+* Global Interpreter Lock
 * Poor locality of reference
 * Paying for flexibility even when you don't need it
 
 
+*Optimizing Python code is often about removing bottlenecks*
+
 ???
 
-The peak performance vs sustained performance is a huge factor in why supercomputing designs beat out some commodity hardware:
+
+The peak performance vs sustained performance is a huge factor in why supercomputing designs beat out otherwise similar looking commodity hardware:
 https://cug.org/5-publications/proceedings_attendee_lists/2003CD/S03_Proceedings/Pages/Authors/Muzio_slides.pdf
+
+Not to mention the difference in Mean Time Before Failure, that report has a fairly striking part about the differences in MTBF between the various systems.
 
 Is commodity hardware optimized for benchmark results?
 
@@ -129,9 +158,16 @@ Given the speed of modern computers there is a general trend to optimize first f
 
 \*(These are just observations and possibly somewhat self-fulfilling)
 
+???
+
+
+
+
 ---
 
 # Why do we optimize code
+
+We want to reduce entropy.
 
 In a business sense we do it to make money.
 
@@ -147,12 +183,13 @@ Talk about the paradigm shift of microcontroller work at Kanes vs the various on
 
 # Why bother writing faster code then?
 
+Essentially human time is the same as always, making people wait around for results is still undesirable.
+
 Bloat and other issues have meant that despite computers being vastly more powerful some tasks are actually getting *SLOWER* than they used to be!
 (When you consider just how much faster computer have got this is actually quite staggering.)
 
-Wirth wrote about this in his 1995 "A plea for lean software"
-
-More recently I remember seeing [The Website Obesity Crisis](http://idlewords.com/talks/website_obesity.htm) by Maciej Cegłowski
+* Wirth wrote about this in his 1995 "A plea for lean software"
+* [The Website Obesity Crisis](http://idlewords.com/talks/website_obesity.htm) by Maciej Cegłowski
 
 ---
 
@@ -288,6 +325,14 @@ How can we use this knowledge to our advantage?
 ---
 
 # Arrays
+
+
+
+---
+
+
+# Benchmarks
+
 
 
 
