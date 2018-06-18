@@ -42,7 +42,6 @@ Meaning that we need to filter out the repositories where they have not made man
 ---
 
 # An example of correct but SLOW code
-
 ```python
 import re; import json; import xml; import numpy; import tensorflow;
 from .models import Repository, CommitCounts
@@ -93,11 +92,12 @@ FLOPS*
 
 ???
 
+Comparison of various performance
 http://www.roylongbottom.org.uk/mips.htm
 
 ---
 
-# Why maximum FLOPS isn't the best metric
+# Why peak FLOPS isn't the best metric
 
 To get the maximum processing power is actually quite tough because the system goes only as fast as the bottlenecks.
 
@@ -105,6 +105,15 @@ CPython traditionally doesn't do well on CPU bound tasks
 
 * GIL
 * Poor locality of reference
+
+
+???
+
+The peak performance vs sustained performance is a huge factor in why supercomputing designs beat out some commodity hardware:
+https://cug.org/5-publications/proceedings_attendee_lists/2003CD/S03_Proceedings/Pages/Authors/Muzio_slides.pdf
+
+
+Commodity hardware optimized for benchmark results?
 
 ---
 
@@ -159,6 +168,24 @@ We have pareto optimal situations and ones that are not.
 
 ---
 
+# Different implementations
+
+There's some options that will let you get some more speed without needing to change your code*.
+
+If you are using CPython you may be able to switch to a more performant implementation like PyPy.
+
+CPython is slow!
+
+*Provided that the libraries are supported by the other implementation.
+
+---
+
+# PyPy
+
+![PyPy Benchmarks](pypyBenchmarks.png "from https://speed.pypy.org")
+
+---
+
 #Back to the example code
 ```python
 import re; import json; import xml; import numpy; import tensorflow;
@@ -186,21 +213,82 @@ def averages_with_threshold(threshold: int) -> dict:
 ```
 ---
 
-# Different implementations
+# Computing an average
 
-There's some options that will let you get some more speed without needing to change your code*.
+```python
+def recursive_average(items, cumulative_sum=0, count=0):
+    if not items:
+        return cumulative_sum / count
+    return recursive_average(items[1:], cumulative_sum+items[0], count+1)
+```
 
-If you are using CPython you may be able to switch to a more performant implementation like PyPy.
+Issues:
 
-CPython is slow!
+* Will fail if `len(items) > sys.maxrecursionlimit`
+* SLOW! Function call overhead is expensive in Python (see zombie frames https://www.lesinskis.com/TIL_python_imports.html)
+* Python does not optimize tail calls.
+  * Memory grows as items length grows
 
-*Provided that the libraries are supported by the other implementation.
+???
+
+Tail call recursion and Python: https://stackoverflow.com/questions/13591970/does-python-optimize-tail-recursion
+
+Preserving accurate stack traces was seen to be more important than enabling this optimization. Explanation from Guido: http://neopythonic.blogspot.com.au/2009/04/final-words-on-tail-calls.html
+
+CPython actually allocates a zombie stack frame when functions are first defined to speed up their execution. This can only really be done for the first frame because if it was done to arbitrary depths it would severly pessimize memory usage for all the functions that are non-recursive in nature. And in Python most functions are not recursive, this is a bit of a self-fulfilling prophecy but it is what it is.
 
 ---
 
-# PyPy
+# A faster way of computing the average
 
-![PyPy Benchmarks](pypyBenchmarks.png "from https://speed.pypy.org")
+```python
+def faster_average(items):
+    """Compute the mean (average) for an iterable"""
+    return sum(items) / len(items)
+```
+
+* We already know the length so we don't have to do `len` number of additions
+* Fewer function calls
+
+
+---
+
+# The default I'd use in production
+
+```python
+import statistics
+statistics.mean(items)
+```
+
+* Don't write code if you don't have to!
+* But what if we know something specific about our data?
+* The standard library has to be generic but *we* can be specific
+  * `statistics.mean` handles edge cases we won't encounter (`Decimal` handling)
+
+???
+
+CPython statistics source: https://github.com/python/cpython/blob/d6debb24e06152a827769b0cac24c47deccdeac1/Lib/statistics.py
+
+---
+
+# Know your data!
+
+Because we have defined the models we know that we are getting integers and only integers for commit counts:
+
+```python
+class CommitCounts(models.Model):
+    """Respresent commit counts by author for a repo"""
+    author_name = models.CharField(max_length=30)
+    commit_count = models.IntegerField()
+```
+
+How can we use this knowledge to our advantage?
+
+---
+
+# Arrays
+
+
 
 ---
 
@@ -216,7 +304,7 @@ How do we improve this?
 # When algorithm choice matters it tends to matter a lot
 
 This is not really Python specific but you will start to run into situations where algorithm choice matters
-faster in Python due to the slower execution speed.
+sooner in Python due to the slower execution speed.
 
 We only needed to sort once here then take slices.
 
