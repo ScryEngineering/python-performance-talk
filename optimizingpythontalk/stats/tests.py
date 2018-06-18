@@ -22,6 +22,15 @@ class StatsTestCase(TestCase):
         assert recursive_average(a) == mean(a)
         assert recursive_average(b) == mean(b)
 
+    def test_faster_averages(self):
+        """Test the recursive average function"""
+        from statistics import mean
+        from .calculate_stats import faster_average
+        a = [1,2,3,4,5]
+        b = [0.1, 3, 2.0, 0.45]
+        assert faster_average(a) == mean(a)
+        assert faster_average(b) == mean(b)
+
     def test_pure_averages(self):
         """test that a threshold of zero gives the average"""
         from .calculate_stats_slow import averages_with_threshold
