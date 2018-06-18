@@ -224,7 +224,7 @@ def recursive_average(items, cumulative_sum=0, count=0):
 
 Issues:
 
-* Will fail if `len(items) > sys.maxrecursionlimit`
+* Will fail if `len(items) > sys.getrecursionlimit()` (This was 1000 by default for me)
 * SLOW! Function call overhead is expensive in Python (see zombie frames https://www.lesinskis.com/TIL_python_imports.html)
 * Python does not optimize tail calls.
   * Memory grows as items length grows
