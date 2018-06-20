@@ -98,18 +98,20 @@ https://hackaday.com/2016/08/22/ask-hackaday-calling-all-68k-experts/ the motoro
 
 ---
 
-
 # Performance of computers
 
-|processor              | MIPS   | FLOPS    |  year      |
-|-----------------------|--------|----------|------------|
-|AP-101B (Space shuttle)|  0.4   |  ??      | 1981-1991  |
-|Motorola  68040        |  18    |  ??      | 1990       |
-|Cray 1                 |  160   |  160M    | 1976       |
-|Intel Core i7-6700K    | 207230 | 113.53G  | 2015       |
-
+|processor                | MIPS   | FLOPS    |  year      |
+|-------------------------|--------|----------|------------|
+|AP-101B (Space shuttle)  |  0.4   |  ??      | 1981-1991  |
+|Motorola  68040          |  18    |  ??      | 1990       |
+|Cray 1                   |  160   |  160M    | 1976       |
+|ARM Cortex A9 (Galaxy 2) |  7500  |  614M    | 2011       |
+|Snapdragon 835 (Galaxy 8)|  ??    | 11.0G    | 2016       |
+|Intel Core i7-6700K      | 207230 | 113.53G  | 2015       |
 
 Not the best metric of performance, but does show the order of magnitude changes that have occured in computing power.
+
+Storage has also got massively cheaper.
 
 (If you wanted more floating point operations a modern GPU might be a good choice but Python doesn't run natively on GPUs)
 
@@ -120,6 +122,7 @@ https://history.nasa.gov/computers/Ch4-3.html
 http://www.roylongbottom.org.uk/mips.htm
 http://www.alternatewars.com/BBOW/Computing/Computing_Power.htm
 https://techgage.com/article/intels-skylake-core-i7-6700k-a-performance-look/
+http://iopscience.iop.org/article/10.1088/1742-6596/681/1/012049/pdf
 
 ---
 
@@ -179,7 +182,7 @@ An AWS anecdote...
 
 ???
 
-Talk about the paradigm shift of microcontroller work at Kanes vs the various one off internal apps that had no performance requirements at all.
+Talk about the paradigm shift of microcontroller work vs the various one off internal apps that had no performance requirements at all.
 
 ---
 
@@ -326,7 +329,7 @@ How can we use this knowledge to our advantage?
 
 ---
 
-# Arrays
+# Optimizing for space with Arrays
 
 ```python
 >>> import array; import sys
@@ -342,11 +345,16 @@ In some cases this can be fairly substantial.
 
 ---
 
-
 # Benchmarks
 
+Profiling with: https://github.com/jazzband/django-silk#installation
 
 
+
+???
+Silk profiles and stores the profiling data in the database and gives you a nice UI to look at how fast things were:
+
+Data is cleared with `python manage.py silk_clear_request_log`
 
 ---
 
@@ -397,7 +405,7 @@ sooner in Python due to the slower execution speed.
 
 We only needed to sort once here then take slices.
 
-But if we are adding in items we'd have to sort very often on a potentially large data set...
+However if we were frequently adding and removing items we'd have to sort very often on a potentially large data set...
 
 https://pypi.org/project/sortedcontainers/
 
@@ -405,7 +413,9 @@ https://pypi.org/project/sortedcontainers/
 
 ---
 
+# Questions?
 
+---
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>
