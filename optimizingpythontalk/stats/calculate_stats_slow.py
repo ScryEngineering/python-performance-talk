@@ -2,7 +2,6 @@ from .models import Repository, CommitCounts
 
 from silk.profiling.profiler import silk_profile
 
-@silk_profile(name='Recursive average')
 def recursive_average(items, cumulative_sum=0, count=0):
     """Compute the mean (average) for an iterable"""
     if not items:
