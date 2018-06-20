@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from stats.views import calculate_averages
 
 urlpatterns = [
+    path('profileAverages', calculate_averages),
     path('admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk'))
 ]
