@@ -317,7 +317,7 @@ Because we have defined the models we know that we are getting integers and only
 
 ```python
 class CommitCounts(models.Model):
-    """Respresent commit counts by author for a repo"""
+    """Represent commit counts by author for a repo"""
     author_name = models.CharField(max_length=30)
     commit_count = models.IntegerField()
 ```
@@ -328,7 +328,17 @@ How can we use this knowledge to our advantage?
 
 # Arrays
 
-
+```python
+>>> import array; import sys
+>>> a = array.array('i', range(1000))
+>>> l = list(range(1000))
+>>> sys.getsizeof(a)
+4184
+>>> sys.getsizeof(l)
+9112
+```
+As you can see there are memory savings for the arrays as compared with the lists.
+In some cases this can be fairly substantial.
 
 ---
 
