@@ -28,4 +28,10 @@ def calculate_averages(request):
         faster_average(items)
     with silk_profile(name='standard library average (%d items)' % len(items)):
         statistics.mean(items)
-    return HttpResponse("Averages now calculated, to see how long it took go to /silk url")
+
+    items = range(10000)
+    with silk_profile(name='faster average (%d items)' % len(items)):
+        faster_average(items)
+    with silk_profile(name='standard library average (%d items)' % len(items)):
+        statistics.mean(items)
+    return HttpResponse('Averages now calculated, to see how long it took go to <a href="/silk">/silk</a> url')
