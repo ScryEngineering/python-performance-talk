@@ -39,3 +39,10 @@ class StatsTestCase(TestCase):
         assert results["bob"] == (10 + 2) / 2
         assert results["alice"] == (20 + 20) / 2
         assert results["eve"] == 10
+
+        from .calculate_stats import averages_with_threshold_fast
+        results = averages_with_threshold_fast(0)
+        assert len(results) == 3 # No authors filtered out
+        assert results["bob"] == (10 + 2) / 2
+        assert results["alice"] == (20 + 20) / 2
+        assert results["eve"] == 10
