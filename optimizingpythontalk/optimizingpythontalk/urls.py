@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from stats.views import calculate_averages
+from stats.views import calculate_averages, averages_with_threshold_slow, averages_with_threshold_faster
 
 urlpatterns = [
     path('profileAverages', calculate_averages),
+    path('profileThresholdFast', averages_with_threshold_faster),
+    path('profileThresholdSlow', averages_with_threshold_slow),
     path('admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk'))
 ]
