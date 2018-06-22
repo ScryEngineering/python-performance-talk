@@ -314,6 +314,8 @@ statistics.mean(items)
 
 CPython statistics source: https://github.com/python/cpython/blob/d6debb24e06152a827769b0cac24c47deccdeac1/Lib/statistics.py
 
+[`Decimal`](https://docs.python.org/3/library/decimal.html) is a fixed point artihmetic library in the standard libray.
+
 ---
 
 # Know your data!
@@ -331,7 +333,7 @@ How can we use this knowledge to our advantage?
 
 ---
 
-# Optimizing for space with Arrays
+# Optimizing for _space_ with Arrays
 
 ```python
 >>> import array; import sys
@@ -346,7 +348,7 @@ As you can see there are memory savings for the arrays as compared with the list
 In some cases this can be fairly substantial.
 
 ???
-There's some downsides to using these, most notably that you are constrained to a single type and integers will not be the same as they are in general Python. Since Python 3 there's a single unified integer and long type, meaning that once you exceed the size of a integer width it will seamlessly change over to arbitrary precision arithmetic. This is lost with Array types which are essentially just contiguous chunks of memory (you lose automatic handling over integer overflows).
+There are some downsides to using these, most notably that you are constrained to a single type and integers will not be the same as they are in general Python. Since Python 3 there's a single unified integer and long type, meaning that once you exceed the size of a integer width it will seamlessly change over to arbitrary precision arithmetic. This is lost with Array types which are essentially just contiguous chunks of memory (you lose automatic handling over integer overflows).
 
 ---
 
@@ -434,7 +436,7 @@ Main issues with unused imports
 
 ???
 
-Unnecessary importing is a huge problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
+Unnecessary importing can be a performance problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
 
 Good conversation here: https://news.ycombinator.com/item?id=16978932
 
