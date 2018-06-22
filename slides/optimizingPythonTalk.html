@@ -159,13 +159,12 @@ Python is still slow relative to other languages but is fast enough to be viable
 As time goes on the computing power we have available to us has increased substantially. According to Moores Law\* computing power has been increasing exponentially as time goes on. However according to Wirth's Law\* software is getting slower than hardware is getting faster.
 
 Given the speed of modern computers there is a general trend to optimize first for developer time, not execution time.
-(When computers were less powerful you needed to write fairly highly optimized code to have any chance of it running fast enough to satisfy user requirements.)
 
 \*(These are just observations and possibly somewhat self-fulfilling)
 
 ???
 
-
+When computers were less powerful you needed to write fairly highly optimized code to have any chance of it running fast enough to satisfy user requirements. Excess compute power capacity is a very recent situation.
 
 
 ---
@@ -174,7 +173,7 @@ Given the speed of modern computers there is a general trend to optimize first f
 
 We want to reduce entropy.
 
-In a business sense we do it to make money.
+A business *approximation* to this is to make money.
 
 One approach I've seen was just writing slow code and letting computing power catch up.
 
@@ -350,6 +349,11 @@ In some cases this can be fairly substantial.
 Profiling with: https://github.com/jazzband/django-silk#installation
 
 
+|function                 |100 items| 900 items| 10000items |
+|-------------------------|---------|----------|------------|
+|Recursive average        |  <1ms   |    1ms   |    NA      |
+|Faster average           |  <1ms   | <1ms     |   1ms      |
+|Standard library         |  <1ms   | 1ms      |   5ms      |
 
 ???
 Silk profiles and stores the profiling data in the database and gives you a nice UI to look at how fast things were:
