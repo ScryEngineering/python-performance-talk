@@ -434,7 +434,24 @@ Unnecessary importing is a huge problem in many situations because it slows down
 
 # First attempt at cleaning up
 
+```python
+def averages_with_threshold_fast(threshold: int) -> dict:
+    commit_counts = defaultdict(list)
+    for commit_info in CommitCounts.objects.filter(commit_count__gt=threshold):
+        commit_counts[commit_info.author_name].append(commit_info.commit_count)
+    return {author: faster_average(counts) for author, counts in commit_counts.items()}
+```
 
+Cleaner yes, but faster?
+
+???
+
+Note that while this has fewer lines of code and is easier to read this doesn't always outperform the "slow" code because it's a poor database query.
+
+With performance don't assume, always profile. See slide before about using Silk to profile the code.
+
+One thing that's very obvious though is that this code is easier to modify to be more performant (if necessary) because it's much cleaner code.
+It is in much part cleaner _because_ of how it easier to maintain.
 
 ---
 
