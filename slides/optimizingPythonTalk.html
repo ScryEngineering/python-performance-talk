@@ -226,6 +226,9 @@ CPython is slow!
 
 ![PyPy Benchmarks](pypyBenchmarks.png "from https://speed.pypy.org")
 
+???
+Note that PyPy takes a while to warm up and hit maximum performance.
+
 ---
 
 #Back to the example code
@@ -342,6 +345,9 @@ How can we use this knowledge to our advantage?
 As you can see there are memory savings for the arrays as compared with the lists.
 In some cases this can be fairly substantial.
 
+???
+There's some downsides to using these, most notably that you are constrained to a single type and integers will not be the same as they are in general Python. Since Python 3 there's a single unified integer and long type, meaning that once you exceed the size of a integer width it will seamlessly change over to arbitrary precision arithmetic. This is lost with Array types which are essentially just contiguous chunks of memory (you lose automatic handling over integer overflows).
+
 ---
 
 # Benchmarks
@@ -454,6 +460,12 @@ With performance don't assume, always profile. See slide before about using Silk
 
 One thing that's very obvious though is that this code is easier to modify to be more performant (if necessary) because it's much cleaner code.
 It is in much part cleaner _because_ of how it easier to maintain.
+
+---
+
+# A better DB query
+
+
 
 ---
 
