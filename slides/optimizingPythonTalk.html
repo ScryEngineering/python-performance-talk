@@ -380,6 +380,36 @@ def averages_with_threshold(threshold: int) -> dict:
     return {author: recursive_average(items) for author, items in authors.items()}
 ```
 
+???
+There's a variety of issues with this code, some of which are covered in the following slides.
+One thing not covered is the global lookups, Python looks up variables from inner-most to outermost scope.
+
+Setting a global variable as a local can save a bit of performance in the case of a heavily used operation, for example:
+
+```python
+def compute_maximums(self):
+    maximums = []
+    for items in big_list_of_lists:
+        maximums.append(max(items))
+    self.maximums = max(maximums)
+```
+To perform this operation max has to be looked up in the most local scope first because we could have reassigned something else to it.
+In this instance the check is local to `compute_maximums` followed by the class scope this is in followed by the global scope.
+
+We could do something like:
+```python
+def compute_maximums(self):
+    _max = max
+    maximums = []
+    for items in big_list_of_lists:
+        maximums.append(_max(items))
+    self.maximums = _max(maximums)
+```
+And we might see a bit of a performance speedup, but this is really in the realm of micro-optimizations.
+
+What's NOT a micro-optimization is that the reference to the global scope will interfere with optimizations that implementations like PyPy can perform.
+So the optimizing JIT compiler that PyPy runs cannot safely perform all optimiz the results involving a global variable because the global could change between runs. This is a really substantial pessimization of performance in some cases. Not to mention it's bad coding practice to have a broader scope for variables than is needed.
+
 ---
 
 # Unused imports
@@ -395,6 +425,12 @@ Main issues with unused imports
 ???
 
 Unnecessary importing is a huge problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
+
+---
+
+# First attempt at cleaning up
+
+
 
 ---
 
