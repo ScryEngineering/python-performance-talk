@@ -436,6 +436,9 @@ Main issues with unused imports
 
 ???
 
+Unused imports are more often problematic because of program correctness concerns rather than performance concerns.
+However because module imports in Python can run arbitrary code it is possible for this process to be very slow, so avoiding unnecessary imports is always an improvement.
+
 Unnecessary importing can be a performance problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
 
 Good conversation here: https://news.ycombinator.com/item?id=16978932
