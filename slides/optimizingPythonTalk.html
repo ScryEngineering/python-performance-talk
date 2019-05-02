@@ -226,6 +226,9 @@ CPython is slow!
 
 ![PyPy Benchmarks](pypyBenchmarks.png "from https://speed.pypy.org")
 
+???
+Note that PyPy takes a while to warm up and hit maximum performance.
+
 ---
 
 #Back to the example code
@@ -311,6 +314,8 @@ statistics.mean(items)
 
 CPython statistics source: https://github.com/python/cpython/blob/d6debb24e06152a827769b0cac24c47deccdeac1/Lib/statistics.py
 
+[`Decimal`](https://docs.python.org/3/library/decimal.html) is a fixed point artihmetic library in the standard libray.
+
 ---
 
 # Know your data!
@@ -328,7 +333,7 @@ How can we use this knowledge to our advantage?
 
 ---
 
-# Optimizing for space with Arrays
+# Optimizing for _space_ with Arrays
 
 ```python
 >>> import array; import sys
@@ -344,6 +349,8 @@ In some cases this can be fairly substantial.
 
 ???
 Note that this will be a bit slower with `array.array` compared to a `list` using the python standard library functions. However move to numpy and an array massively outperforms using a `list`. See https://www.customprogrammingsolutions.com/tutorial/2018-06-18/cpython-lists-cache-locality/
+
+There are some downsides to using these, most notably that you are constrained to a single type and the integers stored in the `Array.array` will not be the same as they are in general Python. Since Python 3 there's a single unified integer and long type, meaning that once you exceed the size of a integer width it will seamlessly change over to arbitrary precision arithmetic. This is lost with Array types which are essentially just contiguous chunks of memory (you lose automatic handling over integer overflows).
 
 ---
 
@@ -387,6 +394,36 @@ def averages_with_threshold(threshold: int) -> dict:
     return {author: recursive_average(items) for author, items in authors.items()}
 ```
 
+???
+There's a variety of issues with this code, some of which are covered in the following slides.
+One thing not covered is the global lookups, Python looks up variables from inner-most to outermost scope.
+
+Setting a global variable as a local can save a bit of performance in the case of a heavily used operation, for example:
+
+```python
+def compute_maximums(self):
+    maximums = []
+    for items in big_list_of_lists:
+        maximums.append(max(items))
+    self.maximums = max(maximums)
+```
+To perform this operation max has to be looked up in the most local scope first because we could have reassigned something else to it.
+In this instance the check is local to `compute_maximums` followed by the class scope this is in followed by the global scope.
+
+We could do something like:
+```python
+def compute_maximums(self):
+    _max = max
+    maximums = []
+    for items in big_list_of_lists:
+        maximums.append(_max(items))
+    self.maximums = _max(maximums)
+```
+And we might see a bit of a performance speedup, but this is really in the realm of micro-optimizations.
+
+What's NOT a micro-optimization is that the reference to the global scope will interfere with optimizations that implementations like PyPy can perform.
+So the optimizing JIT compiler that PyPy runs cannot safely perform all optimiz the results involving a global variable because the global could change between runs. This is a really substantial pessimization of performance in some cases. Not to mention it's bad coding practice to have a broader scope for variables than is needed.
+
 ---
 
 # Unused imports
@@ -401,7 +438,41 @@ Main issues with unused imports
 
 ???
 
-Unnecessary importing is a huge problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
+Unused imports are more often problematic because of program correctness concerns rather than performance concerns.
+However because module imports in Python can run arbitrary code it is possible for this process to be very slow, so avoiding unnecessary imports is always an improvement.
+
+Unnecessary importing can be a performance problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
+
+Good conversation here: https://news.ycombinator.com/item?id=16978932
+
+---
+
+# First attempt at cleaning up
+
+```python
+def averages_with_threshold_fast(threshold: int) -> dict:
+    commit_counts = defaultdict(list)
+    for commit_info in CommitCounts.objects.filter(commit_count__gt=threshold):
+        commit_counts[commit_info.author_name].append(commit_info.commit_count)
+    return {author: faster_average(counts) for author, counts in commit_counts.items()}
+```
+
+Cleaner yes, but faster?
+
+???
+
+Note that while this has fewer lines of code and is easier to read this doesn't always outperform the "slow" code because it's a poor database query.
+
+With performance don't assume, always profile. See slide before about using Silk to profile the code.
+
+One thing that's very obvious though is that this code is easier to modify to be more performant (if necessary) because it's much cleaner code.
+It is in much part cleaner _because_ of how it easier to maintain.
+
+---
+
+# A better DB query
+
+
 
 ---
 
