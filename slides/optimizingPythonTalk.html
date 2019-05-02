@@ -342,6 +342,9 @@ How can we use this knowledge to our advantage?
 As you can see there are memory savings for the arrays as compared with the lists.
 In some cases this can be fairly substantial.
 
+???
+Note that this will be a bit slower with `array.array` compared to a `list` using the python standard library functions. However move to numpy and an array massively outperforms using a `list`. See https://www.customprogrammingsolutions.com/tutorial/2018-06-18/cpython-lists-cache-locality/
+
 ---
 
 # Benchmarks
@@ -401,6 +404,8 @@ Main issues with unused imports
 Unnecessary importing is a huge problem in many situations because it slows down startup time. This is particularly noticeable in CLI applications that need to start up quickly.
 
 ---
+
+
 
 # When algorithm choice matters it tends to matter a lot
 
